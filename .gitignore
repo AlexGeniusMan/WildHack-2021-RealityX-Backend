@@ -1,0 +1,9 @@
+.git
+.idea
+desktop.ini
+venv
+.env
+static_django
+media
+db.sqlite3
+META
