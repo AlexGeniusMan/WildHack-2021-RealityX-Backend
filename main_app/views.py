@@ -10,6 +10,8 @@ from .models import *
 
 import requests
 
+from ml_engine import search
+
 
 class PredictHintsView(APIView):
     """
@@ -27,18 +29,20 @@ class PredictHintsView(APIView):
 
         print(request.user.is_authenticated)
 
-        hints = [
-            'kawd',
-            'awd',
-            'kawgred',
-            'erthwef',
-            'esgrth',
-            'kawrththed',
-            'hrtrhw',
-            'lwakladkjwkdjkwadjklwjdkljaklsjdkwajdk',
-            '0-aw9d0-98 a8w9890w890w890 89d8w',
-            'esre rgerg43 34353453 erf rgregr e324 2344324 ',
-        ]
+        # hints = [
+        #     'kawd',
+        #     'awd',
+        #     'kawgred',
+        #     'erthwef',
+        #     'esgrth',
+        #     'kawrththed',
+        #     'hrtrhw',
+        #     'lwakladkjwkdjkwadjklwjdkljaklsjdkwajdk',
+        #     '0-aw9d0-98 a8w9890w890w890 89d8w',
+        #     'esre rgerg43 34353453 erf rgregr e324 2344324 ',
+        # ]
+
+        hints = search(status_autorization=request.user.is_authenticated, query=letters, n_query=10)
 
         return Response({
             'status': status.HTTP_200_OK,
