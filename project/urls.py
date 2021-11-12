@@ -25,6 +25,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 import main_app.views as views
+from main_app.views import index
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -49,7 +50,8 @@ urlpatterns = [
     url(r'^api/auth/', include('djoser.urls.jwt')),
 
     # Predict hints
-    path('api/predict_hints', views.PredictHintsView.as_view()),
+    # path('api/predict_hints', views.PredictHintsView.as_view()),
+    path("api/predict_hints", index),
 ]
 
 # Static and media
