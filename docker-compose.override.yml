@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  backend:
+    build:
+      context: .
+    volumes:
+      - ./backend/media/:/usr/src/project/media/
+      - backend_static_django:/usr/src/project/static_django/
+    environment:
+      BACKEND_DEBUG_MODE: ${BACKEND_DEBUG_MODE}
+      BACKEND_SECRET_KEY: ${BACKEND_SECRET_KEY}
+      BACKEND_ALLOWED_HOSTS: ${BACKEND_ALLOWED_HOSTS}
+      DJANGO_SUPERUSER_USERNAME: ${BACKEND_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${BACKEND_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${BACKEND_SUPERUSER_PASSWORD}
+      BACKEND_DEFAULT_DB: ${BACKEND_DEFAULT_DB}
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+    ports:
+      - "80:8080"
+  db:
+    image: postgres:12-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+volumes:
+  backend_static_django:
+  postgres_data:
