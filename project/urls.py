@@ -50,8 +50,8 @@ urlpatterns = [
     url(r'^api/auth/', include('djoser.urls.jwt')),
 
     # Predict hints
-    # path('api/predict_hints', views.PredictHintsView.as_view()),
-    path("api/predict_hints", index),
+    path('api/predict_hints', views.PredictHintsView.as_view()),
+    # path("api/predict_hints", index),
 ]
 
 # Static and media
