@@ -25,6 +25,8 @@ class PredictHintsView(APIView):
 
         # response = requests.post('http://ml:8080/api/predict', timeout=10000, json={"img_base64": img_base64}).json()
 
+        print(request.user.is_authenticated)
+
         hints = [
             'kawd',
             'awd',
