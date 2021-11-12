@@ -47,6 +47,9 @@ urlpatterns = [
     # Auth
     url(r'^api/auth/', include('djoser.urls')),
     url(r'^api/auth/', include('djoser.urls.jwt')),
+
+    # Predict hints
+    path('api/predict_hints', views.PredictHintsView.as_view()),
 ]
 
 # Static and media
