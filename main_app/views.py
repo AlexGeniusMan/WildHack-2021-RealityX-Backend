@@ -1,4 +1,5 @@
 import base64
+import datetime
 import random
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -10,7 +11,7 @@ from .models import *
 
 import requests
 
-from ml_engine import search
+from .ml_engine import search
 
 
 class PredictHintsView(APIView):
@@ -29,7 +30,11 @@ class PredictHintsView(APIView):
 
         print(request.user.is_authenticated)
 
-        hints = search(status_autorization=request.user.is_authenticated, query=letters, n_query=10)
+        start = datetime.datetime.now()
+        hints = search(status_autorization=False, query=letters, n_query=10)
+        end = datetime.datetime.now()
+        print(end - start)
+        print(hints)
 
         return Response({
             'status': status.HTTP_200_OK,

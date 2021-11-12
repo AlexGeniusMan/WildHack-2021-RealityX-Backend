@@ -34,7 +34,7 @@ layout_ru_en = dict(zip(map(ord, "йцукенгшщзхъфывапролджэ
 # Объект орфографа русского языка
 spell = Speller('ru')
 
-query_popularity = pd.read_csv('query_popularity.csv')
+query_popularity = pd.read_csv('main_app/query_popularity.csv')
 data_most_common = np.char.lower(np.array(query_popularity['query'], dtype=np.str_))
 
 
