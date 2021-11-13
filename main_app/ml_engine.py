@@ -39,8 +39,8 @@ spell_ru = Speller('ru')
 query_popularity = pd.read_csv('main_app/query_popularity.csv')
 data_most_common = np.char.lower(np.array(query_popularity['query'], dtype=np.str_))
 
-populars_cluster_for_users = pd.read_csv('populars_cluster_for_users.csv')
-clusters = pd.read_csv('clusters.csv')
+populars_cluster_for_users = pd.read_csv('main_app/populars_cluster_for_users.csv')
+clusters = pd.read_csv('main_app/clusters.csv')
 
 clusters_groupby = clusters.groupby('Cluster')
 
