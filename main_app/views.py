@@ -45,7 +45,7 @@ class PredictHintsView(APIView):
         start = datetime.datetime.now()
         if request.user.is_authenticated:
             print('---TRUE')
-            hints = search(status_autorization=False, user_id='5c6522a6ee2ea6ddedd1efb3e0f8e7c4', query=letters,
+            hints = search(status_autorization=True, user_id='5c6522a6ee2ea6ddedd1efb3e0f8e7c4', query=letters,
                            n_query=10)
         else:
             print('---FALSE')
