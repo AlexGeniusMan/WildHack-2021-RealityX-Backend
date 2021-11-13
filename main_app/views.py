@@ -42,13 +42,13 @@ class PredictHintsView(APIView):
 
         start = datetime.datetime.now()
 
-        # hints = search(status_autorization=False, query=letters, n_query=10)
-        time.sleep(0.7)
+        hints = search(status_autorization=False, query=letters, n_query=10)
+        # time.sleep(0.7)
         end = datetime.datetime.now()
         print(end - start)
         # print(hints)
 
         return Response({
             'status': status.HTTP_200_OK,
-            'hints': 'hints'
+            'hints': hints
         })
