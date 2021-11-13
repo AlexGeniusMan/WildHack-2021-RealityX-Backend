@@ -32,14 +32,12 @@ layout_ru_en = dict(zip(map(ord, "йцукенгшщзхъфывапролджэ
                         "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
                         'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'))
 
-# Объект орфографа русского и английского языка
-spell_en = Speller('en')
-spell_ru = Speller('ru')
+# # Объект орфографа русского и английского языка
+# spell_en = Speller('en')
+# spell_ru = Speller('ru')
 
 query_popularity = pd.read_csv('main_app/query_popularity.csv')
 data_most_common = np.char.lower(np.array(query_popularity['query'], dtype=np.str_))
-
-import re
 
 
 def change_layout(query):
@@ -54,7 +52,6 @@ def change_layout(query):
     words_query = {}
 
     i = 0
-    result = []
     output = []
     n_output = 1
 
@@ -85,19 +82,19 @@ def change_layout(query):
         return words_query[0]
 
 
-def correct_query_autocorrect(queries):
-    """
-    Исправление опечаток запроса на русском языке
-    :param query: поисковый запрос (str)
-    :return: исправленный запрос (str)
-    """
-    result = []
-    for query in queries:
-        result.append(spell_en(query))
-        result.append(spell_ru(query))
-    result = np.unique(np.array(result, dtype=np.str_))
-    result = '|'.join(result)
-    return result
+# def correct_query_autocorrect(queries):
+#     """
+#     Исправление опечаток запроса на русском языке
+#     :param query: поисковый запрос (str)
+#     :return: исправленный запрос (str)
+#     """
+#     result = []
+#     for query in queries:
+#         result.append(spell_en(query))
+#         result.append(spell_ru(query))
+#     result = np.unique(np.array(result, dtype=np.str_))
+#     result = '|'.join(result)
+#     return result
 
 
 def correct_query(query):
@@ -132,14 +129,17 @@ def correct_query(query):
         for n_varient in range(len(output)):
             output[n_varient] = re.sub("\'|\)|\(|\,", '', output[n_varient])
 
-            output[n_varient] = spell_ru(output[n_varient]).replace(' ', '\s')
+            # output[n_varient] = spell_ru(output[n_varient]).replace(' ', '\s')
+            output[n_varient] = output[n_varient].replace(' ', '\s')
+
 
     else:
 
         for word in words_query[0]:
-            output = np.append(output, str(spell_ru(word)))
+            # output = np.append(output, str(spell_ru(word)))
+            output = np.append(output, str(word))
 
-    return '(^' + ')|(^'.join(output) + ')'
+    return '(' + ')|('.join(output) + ')'
 
 
 def search(status_autorization, query, n_query):
