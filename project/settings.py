@@ -214,5 +214,3 @@ DJOSER = {
     'SERIALIZERS': {},
     'SET_PASSWORD_RETYPE': True,
 }
-
-CONN_MAX_AGE = None
