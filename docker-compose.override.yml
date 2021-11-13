@@ -5,7 +5,6 @@ services:
     build:
       context: .
     volumes:
-      - ./backend/media/:/usr/src/project/media/
       - backend_static_django:/usr/src/project/static_django/
     environment:
       BACKEND_DEBUG_MODE: ${BACKEND_DEBUG_MODE}
@@ -22,7 +21,7 @@ services:
     depends_on:
       - db
     ports:
-      - "80:8080"
+      - "8003:8080"
   db:
     image: postgres:12-alpine
     volumes:
