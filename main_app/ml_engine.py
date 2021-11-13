@@ -39,6 +39,39 @@ spell_ru = Speller('ru')
 query_popularity = pd.read_csv('main_app/query_popularity.csv')
 data_most_common = np.char.lower(np.array(query_popularity['query'], dtype=np.str_))
 
+populars_cluster_for_users = pd.read_csv('populars_cluster_for_users.csv')
+clusters = pd.read_csv('clusters.csv')
+
+clusters_groupby = clusters.groupby('Cluster')
+
+
+def personal_query(user_id, re_query, n_query):
+    """
+    Выдача персонализированных подсказок
+    :param user_id: id пользователя (str)
+    :param re_query: регулярное выражение запроса (str)
+    :param n_query: количество желательных подсказок в выдаче (str)
+    :return: выдача подсказок (list(str))
+    """
+    result = np.array([])
+
+    test_clusters = populars_cluster_for_users.loc[populars_cluster_for_users['user'] == user_id]['clusters']
+    user_clusters = np.array(test_clusters.iloc[0].replace('[', '').replace(']', '').split(', '), dtype=np.int_)
+
+    i = 0
+    while (len(result) != n_query) and (i < 23):
+        data_for_search = clusters_groupby.apply(lambda x: x.loc[x['Cluster'] == user_clusters[i]])['query']
+        r = re.compile(re_query)
+        try:
+            vmatch = np.vectorize(lambda x: bool(r.findall(x)))
+            search_result = np.array(data_for_search[vmatch(data_for_search)])
+        except:
+            pass
+        result = np.append(result, search_result)
+        i += 1
+
+    return list(result)
+
 
 def correct_query(query):
     """
@@ -76,7 +109,6 @@ def correct_query(query):
             output[n_varient] = spell_ru(output[n_varient]).replace(' ', '\s')
         logger.info(f'Затраченное время на исправление опечаток: {time.time() - start_time}')
 
-
     else:
 
         start_time = time.time()
@@ -87,7 +119,7 @@ def correct_query(query):
     return '(' + ')|('.join(output) + ')'
 
 
-def search(status_autorization, query, n_query):
+def search(status_autorization, user_id, query, n_query):
     """
     Выдача поисковых подсказок
     :param status_autorization: статус авторизации пользователя (boolean)
@@ -96,8 +128,6 @@ def search(status_autorization, query, n_query):
     :return: выдача подсказок (list(str))
     """
 
-    result = []
-
     if status_autorization:
         # Авторизированный пользователь
         logger.debug(f'Начинается поиск подсказок авторизированного пользователя')
@@ -105,13 +135,11 @@ def search(status_autorization, query, n_query):
         start_time2 = time.time()
         reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
         re_query = reg.sub('', correct_query(query))
-        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
+        logger.info(f'Затраченное время на обработку запроса: {time.time() - start_time2}')
         start_time3 = time.time()
-        r = re.compile(re_query)
-        vmatch = np.vectorize(lambda x: bool(r.findall(x)))
-        result = list(data_most_common[vmatch(data_most_common)])
+        result = personal_query(user_id, re_query, n_query)
         logger.info(f'Найдено подсказок: {len(result)}')
-        logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
+        logger.info(f'Затраченное время на поиск подсказок: {time.time() - start_time3}')
     else:
         # Анонимный пользователь
         logger.debug('Начинается поиск подсказок анонимному пользователю')
@@ -119,11 +147,11 @@ def search(status_autorization, query, n_query):
         start_time2 = time.time()
         reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
         re_query = reg.sub('', correct_query(query))
-        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
+        logger.info(f'Затраченное время на обработку запроса: {time.time() - start_time2}')
         start_time3 = time.time()
         r = re.compile(re_query)
         vmatch = np.vectorize(lambda x: bool(r.findall(x)))
         result = list(data_most_common[vmatch(data_most_common)])
         logger.info(f'Найдено подсказок: {len(result)}')
-        logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
+        logger.info(f'Затраченное время на поиск подсказок: {time.time() - start_time3}')
     return result[:n_query]
