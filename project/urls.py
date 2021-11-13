@@ -50,6 +50,9 @@ urlpatterns = [
 
     # Predict hints
     path('api/predict_hints', views.PredictHintsView.as_view()),
+
+    # Is authenticated
+    path('api/is_authenticated', views.IsAuthenticatedView.as_view()),
     # path("api/predict_hints", index),
 ]
 

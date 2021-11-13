@@ -10,6 +10,22 @@ from .ml_engine import search
 #     return HttpResponse("Hello, async Django!")
 
 
+class IsAuthenticatedView(APIView):
+    """
+    Is authenticated
+    """
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return Response({
+                'status': status.HTTP_200_OK
+            })
+        else:
+            return Response({
+                'status': status.HTTP_401_UNAUTHORIZED
+            })
+
+
 class PredictHintsView(APIView):
     """
     Predict hints
