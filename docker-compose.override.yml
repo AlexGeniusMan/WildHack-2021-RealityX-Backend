@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8003:8080"
+      - "8001:8080"
   db:
     image: postgres:12-alpine
     volumes:
