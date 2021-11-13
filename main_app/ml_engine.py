@@ -33,8 +33,7 @@ layout_ru_en = dict(zip(map(ord, "йцукенгшщзхъфывапролджэ
                         "qwertyuiop[]asdfghjkl;'zxcvbnm,./`"
                         'QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?~'))
 
-# Объект орфографа русского и английского языка
-spell_en = Speller('en')
+# Объект орфографа русского языка
 spell_ru = Speller('ru')
 
 query_popularity = pd.read_csv('query_popularity.csv')
@@ -75,7 +74,6 @@ def correct_query(query):
             output[n_varient] = re.sub("\'|\)|\(|\,", '', output[n_varient])
 
             output[n_varient] = spell_ru(output[n_varient]).replace(' ', '\s')
-            # output[n_varient] = output[n_varient].replace(' ', '\s')
         logger.info(f'Затраченное время на исправление опечаток: {time.time() - start_time}')
 
 
@@ -84,7 +82,6 @@ def correct_query(query):
         start_time = time.time()
         for word in words_query[0]:
             output = np.append(output, str(spell_ru(word)))
-            # output = np.append(output, str(word))
         logger.info(f'Затраченное время на исправление опечаток: {time.time() - start_time}')
 
     return '(' + ')|('.join(output) + ')'
@@ -110,10 +107,9 @@ def search(status_autorization, query, n_query):
         re_query = reg.sub('', correct_query(query))
         logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
         start_time3 = time.time()
-        for string in data_most_common:
-            result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
-            if result_one_string != list():
-                result.append(string)
+        r = re.compile(re_query)
+        vmatch = np.vectorize(lambda x: bool(r.findall(x)))
+        result = list(data_most_common[vmatch(data_most_common)])
         logger.info(f'Найдено подсказок: {len(result)}')
         logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
     else:
@@ -125,10 +121,9 @@ def search(status_autorization, query, n_query):
         re_query = reg.sub('', correct_query(query))
         logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
         start_time3 = time.time()
-        for string in data_most_common:
-            result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
-            if result_one_string != list():
-                result.append(string)
+        r = re.compile(re_query)
+        vmatch = np.vectorize(lambda x: bool(r.findall(x)))
+        result = list(data_most_common[vmatch(data_most_common)])
         logger.info(f'Найдено подсказок: {len(result)}')
         logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
     return result[:n_query]
