@@ -12,6 +12,6 @@ COPY . .
 RUN python3 manage.py collectstatic --noinput
 
 #CMD sh -c "python3 manage.py migrate && python3 manage.py createsuperuser --noinput ; gunicorn --workers=5 --bind 0.0.0.0:8080 project.wsgi"
-CMD sh -c "gunicorn --workers=4 --threads=4 --bind 0.0.0.0:8080 project.wsgi"
+CMD sh -c "gunicorn --workers=5 --threads=4 --bind 0.0.0.0:8080 project.wsgi"
 #CMD sh -c "python3 manage.py migrate && python3 manage.py createsuperuser --noinput ; uvicorn project.asgi:application --host 0.0.0.0 --port 8080"
 #CMD sh -c "uvicorn project.asgi:application --host 0.0.0.0 --port 8080"
