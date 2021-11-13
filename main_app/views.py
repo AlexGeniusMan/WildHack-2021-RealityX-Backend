@@ -28,7 +28,7 @@ class PredictHintsView(APIView):
 
         start = datetime.datetime.now()
 
-        hints = search(status_autorization=False, query=letters, n_query=10)
+        hints = search(status_autorization=False, user_id='5c6522a6ee2ea6ddedd1efb3e0f8e7c4', query=letters, n_query=10)
         # time.sleep(0.7)
         end = datetime.datetime.now()
         print(end - start)
