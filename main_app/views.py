@@ -51,5 +51,5 @@ class PredictHintsView(APIView):
         return Response({
             'status': status.HTTP_200_OK,
             'hints': hints,
-            'time': str(end - start)
+            'time': end - start
         })
