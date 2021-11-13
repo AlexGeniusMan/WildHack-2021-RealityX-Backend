@@ -1,4 +1,5 @@
 import re
+import time
 import logging
 import numpy as np
 import pandas as pd
@@ -157,6 +158,7 @@ def search(status_autorization, query, n_query):
         # Авторизированный пользователь
         logger.debug(f'Начинается поиск подсказок авторизированного пользователя')
         # проверяем раскладку только на русском языке
+        start_time = time.time()
         reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
         re_query = reg.sub('', correct_query(query))
         for string in data_most_common:
@@ -164,10 +166,12 @@ def search(status_autorization, query, n_query):
             if result_one_string != list():
                 result.append(string)
         logger.info(f'Найдено подсказок: {len(result)}')
+        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time}')
     else:
         # Анонимный пользователь
         logger.debug('Начинается поиск подсказок анонимному пользователю')
         # проверяем раскладку только на русском языке
+        start_time = time.time()
         reg = re.compile('[^\|a-zа-я0-9\\\s\^\(\)]')
         re_query = reg.sub('', correct_query(query))
         for string in data_most_common:
@@ -175,4 +179,5 @@ def search(status_autorization, query, n_query):
             if result_one_string != list():
                 result.append(string)
         logger.info(f'Найдено подсказок: {len(result)}')
+        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time}')
     return result[:n_query]
