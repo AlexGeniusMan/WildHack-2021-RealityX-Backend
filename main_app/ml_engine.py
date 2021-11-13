@@ -105,28 +105,30 @@ def search(status_autorization, query, n_query):
         # Авторизированный пользователь
         logger.debug(f'Начинается поиск подсказок авторизированного пользователя')
         # проверяем раскладку только на русском языке
-        start_time = time.time()
+        start_time2 = time.time()
         reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
         re_query = reg.sub('', correct_query(query))
-        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time}')
-        start_time = time.time()
+        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
+        start_time3 = time.time()
         for string in data_most_common:
             result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
             if result_one_string != list():
                 result.append(string)
         logger.info(f'Найдено подсказок: {len(result)}')
-        logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time}')
+        logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
     else:
         # Анонимный пользователь
         logger.debug('Начинается поиск подсказок анонимному пользователю')
         # проверяем раскладку только на русском языке
-        start_time = time.time()
-        reg = re.compile('[^\|a-zа-я0-9\\\s\^\(\)]')
+        start_time2 = time.time()
+        reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
         re_query = reg.sub('', correct_query(query))
+        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time2}')
+        start_time3 = time.time()
         for string in data_most_common:
             result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
             if result_one_string != list():
                 result.append(string)
         logger.info(f'Найдено подсказок: {len(result)}')
-        logger.info(f'Затраченное время на обработку запроса: {time.time()-start_time}')
+        logger.info(f'Затраченное время на поиск подсказок: {time.time()-start_time3}')
     return result[:n_query]
