@@ -96,8 +96,50 @@ def correct_query_autocorrect(queries):
         result.append(spell_en(query))
         result.append(spell_ru(query))
     result = np.unique(np.array(result, dtype=np.str_))
-    result = '^' + '|'.join(result)
+    result = '|'.join(result)
     return result
+
+
+def correct_query(query):
+    """
+    Изменение раскладки с английских символов на русские и с русских на английские
+    :param query: поисковый запрос (str)
+    :return: поисковый запрос с измененной раскладкой на русский язык и на английский язык в виде кортежа (tuple(str))
+    """
+    query_split = query.split()
+    words_query = {}
+
+    i = 0
+    output = np.array([])
+    n_output = 0
+
+    for word in query_split:
+        words_query[i] = (list(np.unique([word, word.translate(layout_en_ru), (word.translate(layout_ru_en))])))
+        n_output += len(words_query[i])
+        i += 1
+
+    if i != 1:
+
+        for j in range(1, len(words_query)):
+            if j == 1:
+                for _ in product(words_query[j - 1], words_query[j]):
+                    output = np.append(output, str(_))
+            else:
+                for _ in product(output, words_query[j]):
+                    output = np.append(output, str(_).replace('"', '').replace('\\', ''))
+
+        output = output[-n_output:]
+        for n_varient in range(len(output)):
+            output[n_varient] = re.sub("\'|\)|\(|\,", '', output[n_varient])
+
+            output[n_varient] = spell_ru(output[n_varient]).replace(' ', '\s')
+
+    else:
+
+        for word in words_query[0]:
+            output = np.append(output, str(spell_ru(word)))
+
+    return '(^' + ')|(^'.join(output) + ')'
 
 
 def search(status_autorization, query, n_query):
@@ -110,13 +152,13 @@ def search(status_autorization, query, n_query):
     """
 
     result = []
-    query = query.lower()
 
     if status_autorization:
         # Авторизированный пользователь
         logger.debug(f'Начинается поиск подсказок авторизированного пользователя')
         # проверяем раскладку только на русском языке
-        re_query = correct_query_autocorrect(change_layout(query))
+        reg = re.compile('[^\|a-zа-я0-9\\\s\^]')
+        re_query = reg.sub('', correct_query(query))
         for string in data_most_common:
             result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
             if result_one_string != list():
@@ -126,7 +168,8 @@ def search(status_autorization, query, n_query):
         # Анонимный пользователь
         logger.debug('Начинается поиск подсказок анонимному пользователю')
         # проверяем раскладку только на русском языке
-        re_query = correct_query_autocorrect(change_layout(query))
+        reg = re.compile('[^\|a-zа-я0-9\\\s\^\(\)]')
+        re_query = reg.sub('', correct_query(query))
         for string in data_most_common:
             result_one_string = re.findall(re_query, string, flags=re.IGNORECASE)
             if result_one_string != list():
