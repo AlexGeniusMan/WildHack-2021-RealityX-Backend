@@ -1,27 +1,13 @@
-import base64
 import datetime
-import random
-import time
-
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.db.models import Q
-from .models import *
-
-import requests
-
 from .ml_engine import search
 
-from django.http import HttpResponse
 
-from django.views.decorators.csrf import csrf_exempt
-
-
-@csrf_exempt
-async def index(request):
-    return HttpResponse("Hello, async Django!")
+# @csrf_exempt
+# async def index(request):
+#     return HttpResponse("Hello, async Django!")
 
 
 class PredictHintsView(APIView):
