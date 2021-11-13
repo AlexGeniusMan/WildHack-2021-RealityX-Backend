@@ -37,16 +37,16 @@ class PredictHintsView(APIView):
 
         # response = requests.post('http://ml:8080/api/predict', timeout=10000, json={"img_base64": img_base64}).json()
 
-        print(request.user.is_authenticated)
+        # print(request.user.is_authenticated)
 
         start = datetime.datetime.now()
 
-        hints = search(status_autorization=False, query=letters, n_query=10)
+        # hints = search(status_autorization=False, query=letters, n_query=10)
         end = datetime.datetime.now()
         print(end - start)
-        print(hints)
+        # print(hints)
 
         return Response({
             'status': status.HTTP_200_OK,
-            'hints': hints
+            'hints': 'hints'
         })
